@@ -1,4 +1,4 @@
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from django_auth_adfs.config import settings
 
@@ -7,14 +7,20 @@ try:
 except ImportError:
     import urllib.parse as urlparse
 
-def _decode_url(url):
+def encode_url(url):
     return urlsafe_base64_encode(url).decode()
+
+def decode_url(url):
+    return urlsafe_base64_decode(url).decode()
+
 
 try:
     import django
     if django.VERSION[0] > 1:
-        def _decode_url(url):
+        def encode_url(url):
             return urlsafe_base64_encode(url)
+        def decode_url(url):
+            return urlsafe_base64_decode(url)
 except:
     pass
 

@@ -4,8 +4,9 @@ from django.contrib.auth import authenticate, login
 from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import View
-from django.utils.http import is_safe_url, urlsafe_base64_decode
+from django.utils.http import is_safe_url
 
+from django_auth_adfs.util import decode_url
 from django_auth_adfs.config import settings
 
 
@@ -27,7 +28,7 @@ class OAuth2View(View):
                 login(request, user)
 
                 if request.GET.get('state'):  # currently this is only the "next" URL
-                    next_url = urlsafe_base64_decode(request.GET.get('state')).decode()
+                    next_url = decode_url(request.GET.get('state'))
                     if django.VERSION < (1, 11):
                         hosts_arg = {'host': request.get_host()}
                     else:
